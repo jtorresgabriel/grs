@@ -34,7 +34,7 @@ import librec.intf.Recommender;
  * @author Jorge
  *
  */
-public class Average extends Recommender {
+public class Popularity extends Recommender {
 
 	protected float binThold;
 	protected int[] columns;
@@ -48,7 +48,7 @@ public class Average extends Recommender {
 
 	private HashMap<String, HashMap<Integer, String>> UserRatings;
 	
-	public Average(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
+	public Popularity(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
 		// TODO Auto-generated constructor stub
 		try {
@@ -157,13 +157,11 @@ public class Average extends Recommender {
 		int size = 0;
 
 		String users[] = null;
-		double rates[] = null;
 		double rate = 0;
 
 		if (groupData.containsKey(group) == true) {
 			size = groupData.get(group).size();
 			users = new String[size];
-			rates = new double[size];
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
 				System.out.print(users[i] + "," + item +",");
@@ -171,12 +169,14 @@ public class Average extends Recommender {
 				System.out.print( x + "\n");
 				if (x == null) {
 					System.out.print(users[i] + ";" + item + "\n");
-					rates[i] = 3;
+					double y  = 3;
 				} else {
-					rates[i] = Double.parseDouble(x);
+					double y = Double.parseDouble(x);
 				}
-				rate = rate + rates[i];
-				return rate / size;
+				double y = Double.parseDouble(x);
+				if (y > rate) {
+					rate = y;					
+				}
 			}
 		}
 		return rate;
