@@ -166,9 +166,9 @@ public class Average extends Recommender {
 			rates = new double[size];
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
-				//System.out.print(users[i] + "," + item +",");
+				System.out.print(users[i] + "," + item +",");
 				String x = (UserRatings.get(users[i]).get(item));
-				//System.out.print( x + "\n");
+				System.out.print( x + "\n");
 				if (x == null) {
 					System.out.print(users[i] + ";" + item + "\n");
 					rates[i] = 3;

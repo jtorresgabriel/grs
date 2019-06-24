@@ -58,6 +58,7 @@ import librec.ext.PD;
 import librec.ext.PRankD;
 import librec.ext.SlopeOne;
 import librec.groups.Average;
+import librec.groups.Popularity;
 import librec.intf.GraphicRecommender;
 import librec.intf.IterativeRecommender;
 import librec.intf.Recommender;
@@ -778,8 +779,10 @@ public class LibRec {
 		
 
 		/*********GRS******/
-		case "multiplicative":
+		case "Average":
 			return new Average(trainMatrix, testMatrix, fold);
+		case "popularity":
+			return new Popularity(trainMatrix, testMatrix, fold);
 			
 		default:
 			throw new Exception("No recommender is specified!");
