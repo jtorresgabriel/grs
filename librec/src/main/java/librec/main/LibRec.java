@@ -779,7 +779,7 @@ public class LibRec {
 		
 
 		/*********GRS******/
-		case "average":
+		case "Average":
 			return new Average(trainMatrix, testMatrix, fold);
 		case "popularity":
 			return new Popularity(trainMatrix, testMatrix, fold);

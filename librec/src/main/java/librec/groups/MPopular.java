@@ -34,7 +34,7 @@ import librec.intf.Recommender;
  * @author Jorge
  *
  */
-public class Popularity extends Recommender {
+public class MPopular extends Recommender {
 
 	protected float binThold;
 	protected int[] columns;
@@ -48,7 +48,7 @@ public class Popularity extends Recommender {
 
 	private HashMap<String, HashMap<Integer, String>> UserRatings;
 	
-	public Popularity(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
+	public MPopular(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
 		// TODO Auto-generated constructor stub
 		try {
