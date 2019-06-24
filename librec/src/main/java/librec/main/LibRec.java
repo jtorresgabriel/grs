@@ -62,20 +62,6 @@ import librec.intf.GraphicRecommender;
 import librec.intf.IterativeRecommender;
 import librec.intf.Recommender;
 import librec.intf.Recommender.Measure;
-import librec.personality.d5.PKNN1;
-import librec.personality.d5.PKNN2;
-import librec.personality.d5.PersAsReg1;
-import librec.personality.d5.PersAsReg2;
-import librec.personality.d5.PersMF;
-import librec.personality.d5.PersMFReg1;
-import librec.personality.d5.PersMFReg2;
-import librec.personality.dn.GPKNN1;
-import librec.personality.dn.GPKNN2;
-import librec.personality.dn.GPersAsReg1;
-import librec.personality.dn.GPersAsReg2;
-import librec.personality.dn.GPersMF;
-import librec.personality.dn.GPersMFReg1;
-import librec.personality.dn.GPersMFReg2;
 import librec.ranking.BHfree;
 import librec.ranking.BPR;
 import librec.ranking.BUCM;
@@ -789,36 +775,7 @@ public class LibRec {
 		case "bhfree":
 			return new BHfree(trainMatrix, testMatrix, fold);
 		/* 525-proj */
-		case "pknn1":
-			return new PKNN1(trainMatrix, testMatrix, fold);
-		case "pknn2":
-			return new PKNN2(trainMatrix, testMatrix, fold);
-		case "persmf":
-			return new PersMF(trainMatrix, testMatrix, fold);
-		case "persasreg1":
-			return new PersAsReg1(trainMatrix, testMatrix, fold);
-		case "persasreg2":
-			return new PersAsReg2(trainMatrix, testMatrix, fold);
-		case "persmfreg1":
-			return new PersMFReg1(trainMatrix, testMatrix, fold);
-		case "persmfreg2":
-			return new PersMFReg2(trainMatrix, testMatrix, fold);
-		case "gpersmf":
-			return new GPersMF(trainMatrix, testMatrix, fold);
-		case "gpersasreg1":
-			return new GPersAsReg1(trainMatrix, testMatrix, fold);
-		case "gpersasreg2":
-			return new GPersAsReg2(trainMatrix, testMatrix, fold);
-		case "gpersmfreg1":
-			return new GPersMFReg1(trainMatrix, testMatrix, fold);
-		case "gpersmfreg2":
-			return new GPersMFReg2(trainMatrix, testMatrix, fold);
-		case "gpknn1":
-			return new GPKNN1(trainMatrix, testMatrix, fold);
-		case "gpknn2":
-			return new GPKNN2(trainMatrix, testMatrix, fold);
-
-		/* 525-proj */
+		
 
 		/*********GRS******/
 		case "multiplicative":
