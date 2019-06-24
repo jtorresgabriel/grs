@@ -171,7 +171,7 @@ public class Mvoted extends Recommender {
 					int y = 2;
 					votes[y] = votes[y] + 1;
 				} else {
-					int y = Integer.parseInt(x) - 1;
+					int y = (int)Double.parseDouble(x) - 1;
 					votes[y] = votes[y] + 1;
 				}
 				if ((size > 1) && (size % 2 != 0)) {
@@ -194,7 +194,7 @@ public class Mvoted extends Recommender {
 							a = b;
 							rate = z + 1;
 						} else if (b == a) {
-							rate = z;
+							rate = z+1;
 						}
 					}
 				}
