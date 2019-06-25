@@ -786,6 +786,8 @@ public class LibRec {
 			return new MPopular(trainMatrix, testMatrix, fold);
 		case "mvoted":
 			return new Mvoted(trainMatrix, testMatrix, fold);
+		case "leastmeasury":
+			return new Mvoted(trainMatrix, testMatrix, fold);
 			
 		default:
 			throw new Exception("No recommender is specified!");
