@@ -163,6 +163,7 @@ public class Mvoted extends Recommender {
 			size = groupData.get(group).size();
 			users = new String[size];
 			votes = new int[5];
+			
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
 				String x = (UserRatings.get(users[i]).get(item));
@@ -171,36 +172,33 @@ public class Mvoted extends Recommender {
 					int y = 2;
 					votes[y] = votes[y] + 1;
 				} else {
-					int y = (int)Double.parseDouble(x) - 1;
+					int y = ((int)Math.round(Double.parseDouble(x))) - 1;
 					votes[y] = votes[y] + 1;
 				}
-				if ((size > 1) && (size % 2 != 0)) {
-					for (int z = 0; z < 5; j++) {
-						int a = votes[z];
+			}
+			
+				if ((size > 1) && (size % 2 != 0)) { //to check if the number is even or odd
+					int a = votes[0];
+					for (int z = 1; z < 5; z++) {
 						int b = votes[z];
 						if (b > a) {
 							a = b;
 							rate = z + 1;
-						} else {
-							rate = 1;
 						}
 					}
-
 				} else if ((size > 1) && (size % 2 == 0)) {
-					for (int z = 0; j < 5; j++) {
-						int a = votes[z];
+					int a = votes[0];
+					for (int z = 1; z < 5; z++) {
 						int b = votes[z];
 						if (b > a) {
 							a = b;
 							rate = z + 1;
 						} else if (b == a) {
-							rate = z+1;
+							rate = z+1; //given the max rate if the vote are equal
 						}
 					}
 				}
-
 			}
-		}
 
 		return rate;
 	}
