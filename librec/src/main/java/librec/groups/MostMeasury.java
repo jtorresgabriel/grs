@@ -177,26 +177,20 @@ public class MostMeasury extends Recommender {
 				}
 			}
 		}
-		rate = indexOfSmallest(votes);
+		rate = getIndexOfLargest(votes);
 		return (rate +1);
 	}
 	
 	
-	public static int indexOfSmallest(int[] array){
+	public int getIndexOfLargest( int[] array )
+	{
+	  if ( array == null || array.length == 0 ) return -1; // null or empty
 
-	    // add this
-	    if (array.length == 0)
-	        return -1;
-
-	    int index = 0;
-	    int min = array[index];
-
-	    for (int i = 1; i < array.length; i++){
-	        if (array[i] <= min){
-	        min = array[i];
-	        index = i;
-	        }
-	    }
-	    return index;
+	  int largest = 0;
+	  for ( int i = 1; i < array.length; i++ )
+	  {
+	      if ( array[i] > array[largest] ) largest = i;
+	  }
+	  return largest; // position of the first largest found
 	}
 }

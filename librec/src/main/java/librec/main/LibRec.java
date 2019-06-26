@@ -788,7 +788,8 @@ public class LibRec {
 			return new Mvoted(trainMatrix, testMatrix, fold);
 		case "leastmeasury":
 			return new Mvoted(trainMatrix, testMatrix, fold);
-			
+		case "mostmeasury":
+			return new Mvoted(trainMatrix, testMatrix, fold);
 		default:
 			throw new Exception("No recommender is specified!");
 		}
