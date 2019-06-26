@@ -39,6 +39,8 @@ public class LeastMeasury extends Recommender {
 	protected float binThold;
 	protected int[] columns;
 	protected TimeUnit timeUnit;
+	
+	public static int a =0;
 
 	// Hashmap to store the all the data of all users in the input dataset (User,
 	// Group);
@@ -152,51 +154,55 @@ public class LeastMeasury extends Recommender {
 
 		int group = Integer.parseInt(rateDao.getUserId(u));
 		int item = Integer.parseInt(rateDao.getItemId(j));
-
 		int size = 0;
 
 		String users[] = null;
-		int votes[] = null;
-		double rate = 0;
+		double rates[] = null;
+		int index = 0;
 
 		if (groupData.containsKey(group) == true) {
 			size = groupData.get(group).size();
 			users = new String[size];
-			votes = new int[5];
+			rates = new double[size];
 			
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
+				//System.out.print(users[i] + "," + item +",");
+				System.out.print(users[i] + "," + item +",");
 				String x = (UserRatings.get(users[i]).get(item));
+				System.out.print( x + "\n");
 				if (x == null) {
 					System.out.print(users[i] + ";" + item + "\n");
-					int y = 2;
-					votes[y] = votes[y] + 1;
+					rates[i] = 3;
 				} else {
-					int y = ((int)Math.round(Double.parseDouble(x))) - 1;
-					votes[y] = votes[y] + 1;
+					rates[i] = Double.parseDouble(x);
 				}
 			}
+		index = indexOfSmallest(rates);
 		}
-		rate = indexOfSmallest(votes);
-		return (rate +1);
+		
+		return (rates[index]);
 	}
 	
 	
-	public static int indexOfSmallest(int[] array){
-
-	    // add this
-	    if (array.length == 0)
-	        return -1;
-
-	    int index = 0;
-	    int min = array[index];
+	public static int indexOfSmallest(double[] array){
+		
+		  int index = 0;
+		  double min = array[index];
+		
+		int x;
+		if((x = array.length) == 1) {
+			return index;
+		}
+	  
 
 	    for (int i = 1; i < array.length; i++){
-	        if (array[i] <= min){
+	        if ((array[i] <= min) && (array[i] > 0)){
 	        min = array[i];
 	        index = i;
 	        }
 	    }
+	  
 	    return index;
 	}
 }
