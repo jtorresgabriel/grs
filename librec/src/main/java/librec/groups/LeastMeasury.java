@@ -187,22 +187,13 @@ public class LeastMeasury extends Recommender {
 	
 	public static int indexOfSmallest(double[] array){
 		
-		  int index = 0;
-		  double min = array[index];
-		
-		int x;
-		if((x = array.length) == 1) {
-			return index;
-		}
-	  
+		 if ( array == null || array.length == 0 ) return -1; // null or empty
 
-	    for (int i = 1; i < array.length; i++){
-	        if ((array[i] <= min) && (array[i] > 0)){
-	        min = array[i];
-	        index = i;
-	        }
-	    }
-	  
-	    return index;
+		  int smallest = 0;
+		  for ( int i = 1; i < array.length; i++ )
+		  {
+		      if ( array[i] < array[smallest] ) smallest = i;
+		  }
+		  return smallest; // position of the first smallest found
+		}
 	}
-}
