@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.BiMap;
@@ -47,7 +48,9 @@ public class Average extends Recommender {
 	private Map<Integer, List<String>> groupData;
 
 	private HashMap<String, HashMap<Integer, String>> UserRatings;
-	
+	private HashMap<Integer, List<String>> ItemData;
+	private ArrayList<Integer> missingGroup;
+
 	public Average(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
 		// TODO Auto-generated constructor stub
@@ -57,17 +60,18 @@ public class Average extends Recommender {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		missingUser();
 	}
 
 	@Override
 	protected void initModel() throws Exception {
-		
-		
+
 	}
-	
+
 	// This funtion should be in java class to avoid repeticion
 	public void readUserRatings() throws Exception {
-			
+
 		// groupData has group number as Key and values list of user.
 		try {
 			BufferedReader br = FileIO.getReader(cf.getPath("dataset.group"));
@@ -78,7 +82,7 @@ public class Average extends Recommender {
 				String[] data = line.split(",");
 
 				Integer groupId = Integer.parseInt(data[0]);
-				String user = data[1];
+				String user = data[1].toLowerCase();
 
 				List<String> current = groupData.get(groupId);
 				if (current == null) {
@@ -112,7 +116,7 @@ public class Average extends Recommender {
 					inner.put(Integer.parseInt(data[1]), data[2]);
 					UserRatings.put(key, inner);
 				} else if (UserRatings.containsKey(key)) {
-					HashMap<Integer, String> inner =  (HashMap<Integer, String>) UserRatings.get(key).clone();
+					HashMap<Integer, String> inner = (HashMap<Integer, String>) UserRatings.get(key).clone();
 					inner.put(Integer.parseInt(data[1]), data[2]);
 					UserRatings.put(key, inner);
 				}
@@ -126,9 +130,9 @@ public class Average extends Recommender {
 		}
 
 		// adding ratings from predict ratings to UserRatings
-		
+
 		BufferedReader br = FileIO.getReader(cf.getPath("dataset.ratings.predict"));
-		
+
 		String line = null;
 
 		while ((line = br.readLine()) != null) {
@@ -145,12 +149,70 @@ public class Average extends Recommender {
 				UserRatings.put(key, inner);
 			}
 		}
+
 		br.close();
+
+	}
+
+	protected void missingUser() {
+		missingGroup = new ArrayList<Integer>();
+		for (Entry<Integer, List<String>> entry : groupData.entrySet()) {
+			// System.out.println(entry.getKey() + " = " + entry.getValue());
+			int size = entry.getValue().size(); // user per group
+			int missingUser = 0;
+			for (int i = 0; i < size; i++) {
+				if (UserRatings.containsKey(entry.getValue().get(i)) == false) {
+					missingUser = missingUser + 1;
+					//System.out.println(entry.getKey() + " , " + entry.getValue().get(i));
+				}
+			}
+			if (missingUser == size) {
+				missingGroup.add(entry.getKey());
+				//System.out.print(missingGroup);
+			
+			}
+		}
+		for(Integer str : missingGroup) {
+			groupData.remove(str);
+		}
 		
 	}
 
+	protected double averageMissing(int item) {
+		int average = 0;
+		try {
+			BufferedReader br = FileIO.getReader(cf.getPath("dataset.ratings"));
+			ItemData = new HashMap<Integer, List<String>>();
+
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				String[] data = line.split(",");
+
+				Integer itemId = Integer.parseInt(data[1]);
+				String rate = data[2];
+
+				List<String> current = ItemData.get(itemId);
+				if (current == null) {
+					current = new ArrayList<String>();
+					ItemData.put(itemId, current);
+				}
+				current.add(rate);
+			}
+			br.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException iex) {
+			iex.printStackTrace();
+		}
+		for (int i = 0; i < ItemData.get(item).size(); i++) {
+			average = average + Integer.parseInt(ItemData.get(item).get(i));
+		}
+		return average / ItemData.get(item).size();
+
+	}
+
 	protected double predict(int u, int j) {
-		
+
 		int group = Integer.parseInt(rateDao.getUserId(u));
 		int item = Integer.parseInt(rateDao.getItemId(j));
 
@@ -166,14 +228,12 @@ public class Average extends Recommender {
 			rates = new double[size];
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
-				System.out.print(users[i] + "," + item +",");
-				String x = (UserRatings.get(users[i]).get(item));
-				System.out.print( x + "\n");
-				if (x == null) {
-					System.out.print(users[i] + ";" + item + "\n");
-					rates[i] = 3;
-				} else {
-					rates[i] = Double.parseDouble(x);
+				if (UserRatings.get(users[i]) == null) {
+					rates[i] = averageMissing(item);
+					
+				}else {
+				String x = (UserRatings.get(users[i]).get(item));							
+				rates[i] = Double.parseDouble(x);
 				}
 				rate = rate + rates[i];
 				return rate / size;
