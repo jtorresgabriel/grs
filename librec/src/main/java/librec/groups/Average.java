@@ -89,9 +89,16 @@ public class Average extends Recommender {
 					current = new ArrayList<String>();
 					groupData.put(groupId, current);
 				}
-				current.add(user);
+				int exite = 0;
+				for (int i = 0; i <current.size(); i++) {
+					if(user.equals(current.get(i)) == true) {
+						 exite = 1;
+					}
+				}
+				if (exite == 0) {
+					current.add(user);	
+				}
 			}
-
 			br.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

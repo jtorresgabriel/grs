@@ -62,6 +62,7 @@ public class LeastMeasury extends Recommender {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//missingUser();
 	}
 
 	@Override
@@ -82,14 +83,23 @@ public class LeastMeasury extends Recommender {
 				String[] data = line.split(",");
 
 				Integer groupId = Integer.parseInt(data[0]);
-				String user = data[1];
+				String user = data[1].toLowerCase();
 
 				List<String> current = groupData.get(groupId);
 				if (current == null) {
 					current = new ArrayList<String>();
 					groupData.put(groupId, current);
 				}
-				current.add(user);
+				int exite = 0;
+				for (int i = 0; i <current.size(); i++) {
+					if(user.equals(current.get(i)) == true) {
+						 exite = 1;
+					}
+				}
+				if (exite == 0) {
+					current.add(user);	
+				}
+				
 			}
 
 			br.close();
@@ -178,8 +188,7 @@ public class LeastMeasury extends Recommender {
 			}
 			if (missingUser == size) {
 				missingGroup.add(entry.getKey());
-				//System.out.print(missingGroup);
-			
+				//System.out.print(missingGroup)
 			}
 		}
 		for(Integer str : missingGroup) {
@@ -189,7 +198,7 @@ public class LeastMeasury extends Recommender {
 	}
 	
 	protected double averageMissing(int item) {
-		int average = 0;
+		double average = 0;
 
 		for (int i = 0; i < ItemData.get(item).size(); i++) {
 			average = average + Integer.parseInt(ItemData.get(item).get(i));
@@ -224,20 +233,22 @@ public class LeastMeasury extends Recommender {
 			}
 		index = indexOfSmallest(rates);
 		}
-		
 		return (rates[index]);
 	}
 	
 	
 	public static int indexOfSmallest(double[] array){
 		
-		 if ( array == null || array.length == 0 ) return -1; // null or empty
+		 if ( array == null || array.length == 0 ) {
+			 return -1; // null or empty
+		 }
 
 		  int smallest = 0;
 		  for ( int i = 1; i < array.length; i++ )
 		  {
 		      if ( array[i] < array[smallest] ) smallest = i;
 		  }
+		  System.out.print(smallest + "\n");
 		  return smallest; // position of the first smallest found
 		}
 	}
