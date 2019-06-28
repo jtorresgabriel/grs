@@ -59,7 +59,6 @@ import librec.ext.PRankD;
 import librec.ext.SlopeOne;
 import librec.groups.Average;
 import librec.groups.LeastMeasury;
-import librec.groups.MPopular;
 import librec.groups.MostMeasury;
 import librec.groups.Mvoted;
 import librec.intf.GraphicRecommender;
