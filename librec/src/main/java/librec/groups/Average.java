@@ -102,8 +102,9 @@ public class Average extends Recommender {
 		// reading individual ratings
 		try {
 			UserRatings = new HashMap<String, HashMap<Integer, String>>();
+			ItemData = new HashMap<Integer, List<String>>();
 			BufferedReader br = FileIO.getReader(cf.getPath("dataset.ratings"));
-			;
+			
 			String line = null;
 
 			while ((line = br.readLine()) != null) {
@@ -111,15 +112,25 @@ public class Average extends Recommender {
 
 				// HashMap<Integer,String>inner = new HashMap<Integer, String>();
 				String key = data[0];
+				Integer itemId = Integer.parseInt(data[1]);
+				String rate = data[2];
+				
 				if (UserRatings.isEmpty() || !UserRatings.containsKey(key)) {
 					HashMap<Integer, String> inner = new HashMap<Integer, String>();
-					inner.put(Integer.parseInt(data[1]), data[2]);
+					inner.put(itemId, rate);
 					UserRatings.put(key, inner);
 				} else if (UserRatings.containsKey(key)) {
 					HashMap<Integer, String> inner = (HashMap<Integer, String>) UserRatings.get(key).clone();
-					inner.put(Integer.parseInt(data[1]), data[2]);
+					inner.put(itemId, rate);
 					UserRatings.put(key, inner);
 				}
+				
+				List<String> current = ItemData.get(itemId);
+				if (current == null) {
+					current = new ArrayList<String>();
+					ItemData.put(itemId, current);
+				}
+				current.add(rate);
 			}
 			br.close();
 
@@ -180,30 +191,7 @@ public class Average extends Recommender {
 
 	protected double averageMissing(int item) {
 		int average = 0;
-		try {
-			BufferedReader br = FileIO.getReader(cf.getPath("dataset.ratings"));
-			ItemData = new HashMap<Integer, List<String>>();
 
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				String[] data = line.split(",");
-
-				Integer itemId = Integer.parseInt(data[1]);
-				String rate = data[2];
-
-				List<String> current = ItemData.get(itemId);
-				if (current == null) {
-					current = new ArrayList<String>();
-					ItemData.put(itemId, current);
-				}
-				current.add(rate);
-			}
-			br.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException iex) {
-			iex.printStackTrace();
-		}
 		for (int i = 0; i < ItemData.get(item).size(); i++) {
 			average = average + Integer.parseInt(ItemData.get(item).get(i));
 		}
