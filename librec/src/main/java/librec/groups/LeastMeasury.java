@@ -62,7 +62,7 @@ public class LeastMeasury extends Recommender {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//missingUser();
+		missingUser();
 	}
 
 	@Override
@@ -214,7 +214,13 @@ public class LeastMeasury extends Recommender {
 		int item = Integer.parseInt(rateDao.getItemId(j));
 		int size = 0;
 		int smallest = 0;
-
+		
+		int deletegroup[] = {12, 36, 43, 45, 48, 50, 53, 61, 65, 66, 68};
+		for (int i = 0; i< deletegroup.length; i++) {
+			if (group == deletegroup[i]) {
+			System.out.print(group);
+			}
+		}
 		String users[] = null;
 		double rates[] = null;
 		int index = 0;

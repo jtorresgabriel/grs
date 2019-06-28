@@ -210,7 +210,7 @@ public class Average extends Recommender {
 
 		int group = Integer.parseInt(rateDao.getUserId(u));
 		int item = Integer.parseInt(rateDao.getItemId(j));
-
+		
 		int size = 0;
 
 		String users[] = null;

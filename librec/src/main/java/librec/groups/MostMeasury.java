@@ -62,7 +62,7 @@ public class MostMeasury extends Recommender {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//missingUser();
+		missingUser();
 	}
 
 	@Override
