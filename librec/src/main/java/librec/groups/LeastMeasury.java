@@ -188,7 +188,8 @@ public class LeastMeasury extends Recommender {
 			}
 			if (missingUser == size) {
 				missingGroup.add(entry.getKey());
-				//System.out.print(missingGroup)
+				//System.out.print(missingGroup);
+			
 			}
 		}
 		for(Integer str : missingGroup) {
@@ -208,10 +209,11 @@ public class LeastMeasury extends Recommender {
 	}
 
 	protected double predict(int u, int j) {
-
+		
 		int group = Integer.parseInt(rateDao.getUserId(u));
 		int item = Integer.parseInt(rateDao.getItemId(j));
 		int size = 0;
+		int smallest = 0;
 
 		String users[] = null;
 		double rates[] = null;
@@ -222,6 +224,7 @@ public class LeastMeasury extends Recommender {
 			users = new String[size];
 			rates = new double[size];
 			
+			
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
 				if (UserRatings.get(users[i]) == null) {
@@ -231,9 +234,9 @@ public class LeastMeasury extends Recommender {
 				rates[i] = Double.parseDouble(x);
 				}
 			}
-		index = indexOfSmallest(rates);
 		}
-		return (rates[index]);
+		
+		return (rates[indexOfSmallest(rates)]);
 	}
 	
 	

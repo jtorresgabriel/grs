@@ -784,8 +784,6 @@ public class LibRec {
 		/*********GRS******/
 		case "average":
 			return new Average(trainMatrix, testMatrix, fold);
-		case "popularity":
-			return new MPopular(trainMatrix, testMatrix, fold);
 		case "mvoted":
 			return new Mvoted(trainMatrix, testMatrix, fold);
 		case "leastmeasury":
