@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.BiMap;
@@ -49,6 +50,8 @@ public class LeastMeasury extends Recommender {
 	private Map<Integer, List<String>> groupData;
 
 	private HashMap<String, HashMap<Integer, String>> UserRatings;
+	private HashMap<Integer, List<String>> ItemData;
+	private ArrayList<Integer> missingGroup;
 
 	public LeastMeasury(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
@@ -99,8 +102,9 @@ public class LeastMeasury extends Recommender {
 		// reading individual ratings
 		try {
 			UserRatings = new HashMap<String, HashMap<Integer, String>>();
+			ItemData = new HashMap<Integer, List<String>>();
 			BufferedReader br = FileIO.getReader(cf.getPath("dataset.ratings"));
-			;
+			
 			String line = null;
 
 			while ((line = br.readLine()) != null) {
@@ -108,17 +112,28 @@ public class LeastMeasury extends Recommender {
 
 				// HashMap<Integer,String>inner = new HashMap<Integer, String>();
 				String key = data[0];
+				Integer itemId = Integer.parseInt(data[1]);
+				String rate = data[2];
+				
 				if (UserRatings.isEmpty() || !UserRatings.containsKey(key)) {
 					HashMap<Integer, String> inner = new HashMap<Integer, String>();
-					inner.put(Integer.parseInt(data[1]), data[2]);
+					inner.put(itemId, rate);
 					UserRatings.put(key, inner);
 				} else if (UserRatings.containsKey(key)) {
 					HashMap<Integer, String> inner = (HashMap<Integer, String>) UserRatings.get(key).clone();
-					inner.put(Integer.parseInt(data[1]), data[2]);
+					inner.put(itemId, rate);
 					UserRatings.put(key, inner);
 				}
+				
+				List<String> current = ItemData.get(itemId);
+				if (current == null) {
+					current = new ArrayList<String>();
+					ItemData.put(itemId, current);
+				}
+				current.add(rate);
 			}
 			br.close();
+
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -149,6 +164,39 @@ public class LeastMeasury extends Recommender {
 		br.close();
 
 	}
+	protected void missingUser() {
+		missingGroup = new ArrayList<Integer>();
+		for (Entry<Integer, List<String>> entry : groupData.entrySet()) {
+			// System.out.println(entry.getKey() + " = " + entry.getValue());
+			int size = entry.getValue().size(); // user per group
+			int missingUser = 0;
+			for (int i = 0; i < size; i++) {
+				if (UserRatings.containsKey(entry.getValue().get(i)) == false) {
+					missingUser = missingUser + 1;
+					//System.out.println(entry.getKey() + " , " + entry.getValue().get(i));
+				}
+			}
+			if (missingUser == size) {
+				missingGroup.add(entry.getKey());
+				//System.out.print(missingGroup);
+			
+			}
+		}
+		for(Integer str : missingGroup) {
+			groupData.remove(str);
+		}
+		
+	}
+	
+	protected double averageMissing(int item) {
+		int average = 0;
+
+		for (int i = 0; i < ItemData.get(item).size(); i++) {
+			average = average + Integer.parseInt(ItemData.get(item).get(i));
+		}
+		return average / ItemData.get(item).size();
+
+	}
 
 	protected double predict(int u, int j) {
 
@@ -167,15 +215,11 @@ public class LeastMeasury extends Recommender {
 			
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
-				//System.out.print(users[i] + "," + item +",");
-				System.out.print(users[i] + "," + item +",");
+				if (UserRatings.get(users[i]) == null) {
+					rates[i] = averageMissing(item);
+				}else {
 				String x = (UserRatings.get(users[i]).get(item));
-				System.out.print( x + "\n");
-				if (x == null) {
-					System.out.print(users[i] + ";" + item + "\n");
-					rates[i] = 3;
-				} else {
-					rates[i] = Double.parseDouble(x);
+				rates[i] = Double.parseDouble(x);
 				}
 			}
 		index = indexOfSmallest(rates);
