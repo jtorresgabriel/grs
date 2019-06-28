@@ -248,7 +248,6 @@ public class LeastMeasury extends Recommender {
 		  {
 		      if ( array[i] < array[smallest] ) smallest = i;
 		  }
-		  System.out.print(smallest + "\n");
 		  return smallest; // position of the first smallest found
 		}
 	}
