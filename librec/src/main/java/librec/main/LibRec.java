@@ -58,7 +58,6 @@ import librec.ext.PD;
 import librec.ext.PRankD;
 import librec.ext.SlopeOne;
 import librec.groups.Average;
-import librec.groups.LeastMeasury;
 import librec.groups.MPopular;
 import librec.groups.Mvoted;
 import librec.intf.GraphicRecommender;
@@ -788,8 +787,9 @@ public class LibRec {
 		case "mvoted":
 			return new Mvoted(trainMatrix, testMatrix, fold);
 		case "leastmeasury":
-			return new LeastMeasury(trainMatrix, testMatrix, fold);
-			
+			return new Mvoted(trainMatrix, testMatrix, fold);
+		case "mostmeasury":
+			return new Mvoted(trainMatrix, testMatrix, fold);
 		default:
 			throw new Exception("No recommender is specified!");
 		}
