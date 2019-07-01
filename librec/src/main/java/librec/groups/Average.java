@@ -27,6 +27,7 @@ import happy.coding.io.Strings;
 import happy.coding.system.Dates;
 
 import librec.data.DataDAO;
+import librec.data.ReadingGroups;
 import librec.data.SparseMatrix;
 import librec.data.SparseVector;
 import librec.intf.Recommender;
@@ -50,17 +51,15 @@ public class Average extends Recommender {
 	private HashMap<String, HashMap<Integer, String>> UserRatings;
 	private HashMap<Integer, List<String>> ItemData;
 	private ArrayList<Integer> missingGroup;
+	private ReadingGroups groupDataDao;
 
 	public Average(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
-		// TODO Auto-generated constructor stub
-		try {
-			readUserRatings();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		
+		groupDataDao = new ReadingGroups(cf.getPath("dataset.ratings.group"));
+		groupData = groupDataDao.ReadingGroups(cf.getPath("dataset.group"));
+		UserRatings = groupDataDao.ReadUserRatings(cf.getPath("dataset.ratings"), cf.getPath("dataset.ratings.predict"));
+		ItemData = groupDataDao.ReadItems(cf.getPath("dataset.ratings"));
 		missingUser();
 	}
 
@@ -70,108 +69,7 @@ public class Average extends Recommender {
 	}
 
 	// This funtion should be in java class to avoid repeticion
-	public void readUserRatings() throws Exception {
-
-		// groupData has group number as Key and values list of user.
-		try {
-			BufferedReader br = FileIO.getReader(cf.getPath("dataset.group"));
-			groupData = new HashMap<Integer, List<String>>();
-
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				String[] data = line.split(",");
-
-				Integer groupId = Integer.parseInt(data[0]);
-				String user = data[1].toLowerCase();
-
-				List<String> current = groupData.get(groupId);
-				if (current == null) {
-					current = new ArrayList<String>();
-					groupData.put(groupId, current);
-				}
-				int exite = 0;
-				for (int i = 0; i <current.size(); i++) {
-					if(user.equals(current.get(i)) == true) {
-						 exite = 1;
-					}
-				}
-				if (exite == 0) {
-					current.add(user);	
-				}
-			}
-			br.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException iex) {
-			iex.printStackTrace();
-		}
-
-		// reading individual ratings
-		try {
-			UserRatings = new HashMap<String, HashMap<Integer, String>>();
-			ItemData = new HashMap<Integer, List<String>>();
-			BufferedReader br = FileIO.getReader(cf.getPath("dataset.ratings"));
-			
-			String line = null;
-
-			while ((line = br.readLine()) != null) {
-				String[] data = line.split("[ \t,]");
-
-				// HashMap<Integer,String>inner = new HashMap<Integer, String>();
-				String key = data[0];
-				Integer itemId = Integer.parseInt(data[1]);
-				String rate = data[2];
-				
-				if (UserRatings.isEmpty() || !UserRatings.containsKey(key)) {
-					HashMap<Integer, String> inner = new HashMap<Integer, String>();
-					inner.put(itemId, rate);
-					UserRatings.put(key, inner);
-				} else if (UserRatings.containsKey(key)) {
-					HashMap<Integer, String> inner = (HashMap<Integer, String>) UserRatings.get(key).clone();
-					inner.put(itemId, rate);
-					UserRatings.put(key, inner);
-				}
-				
-				List<String> current = ItemData.get(itemId);
-				if (current == null) {
-					current = new ArrayList<String>();
-					ItemData.put(itemId, current);
-				}
-				current.add(rate);
-			}
-			br.close();
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException iex) {
-			iex.printStackTrace();
-		}
-
-		// adding ratings from predict ratings to UserRatings
-
-		BufferedReader br = FileIO.getReader(cf.getPath("dataset.ratings.predict"));
-
-		String line = null;
-
-		while ((line = br.readLine()) != null) {
-			String[] data = line.split("[ \t,]");
-
-			String key = data[0];
-			if (UserRatings.isEmpty() || !UserRatings.containsKey(key)) {
-				HashMap<Integer, String> inner = new HashMap<Integer, String>();
-				inner.put(Integer.parseInt(data[1]), data[3]);
-				UserRatings.put(key, inner);
-			} else if (UserRatings.containsKey(key)) {
-				HashMap<Integer, String> inner = (HashMap<Integer, String>) UserRatings.get(key).clone();
-				inner.put(Integer.parseInt(data[1]), data[3]);
-				UserRatings.put(key, inner);
-			}
-		}
-
-		br.close();
-
-	}
-
+	
 	protected void missingUser() {
 		missingGroup = new ArrayList<Integer>();
 		for (Entry<Integer, List<String>> entry : groupData.entrySet()) {
