@@ -62,6 +62,7 @@ import librec.groups.AverageMeasury;
 import librec.groups.LeastMeasury;
 import librec.groups.MostMeasury;
 import librec.groups.Mvoted;
+import librec.groups.add;
 import librec.groups.multiplicative;
 import librec.intf.GraphicRecommender;
 import librec.intf.IterativeRecommender;
@@ -795,6 +796,8 @@ public class LibRec {
 			return new MostMeasury(trainMatrix, testMatrix, fold);
 		case "multiplicative":
 			return new multiplicative(trainMatrix, testMatrix, fold);
+		case "add":
+			return new add(trainMatrix, testMatrix, fold);
 		default:
 			throw new Exception("No recommender is specified!");
 		}

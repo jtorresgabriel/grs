@@ -36,7 +36,7 @@ import librec.intf.Recommender;
  * @author Jorge
  *
  */
-public class Average extends Recommender {
+public class add extends Recommender {
 
 	protected float binThold;
 	protected int[] columns;
@@ -53,7 +53,7 @@ public class Average extends Recommender {
 	private ArrayList<Integer> missingGroup;
 	private ReadingGroups groupDataDao;
 
-	public Average(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
+	public add(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
 		
 		groupDataDao = new ReadingGroups(cf.getPath("dataset.ratings.group"));
@@ -113,7 +113,7 @@ public class Average extends Recommender {
 
 		String users[] = null;
 		double rates[] = null;
-		double rate = 0;
+		double rate = 1;
 
 		if (groupData.containsKey(group) == true) {
 			size = groupData.get(group).size();
@@ -124,18 +124,17 @@ public class Average extends Recommender {
 				if (UserRatings.get(users[i]) == null) {
 					rates[i] = averageMissing(item);
 				}else if ((UserRatings.get(users[i]).get(item)) == null) {
-					//String x = (UserRatings.get(users[i]).get(item));	
-					//System.out.print(users[i]+ " "+ item +" "+ x+"\n");
+					String x = (UserRatings.get(users[i]).get(item));	
+					System.out.print(users[i]+ " "+ item +" "+ x+"\n");
 					rates[i] = averageMissing(item);
 				}else {
 				String x = (UserRatings.get(users[i]).get(item));	
 				rates[i] = Double.parseDouble(x);
 				}
 				rate = rate + rates[i];
-				
 			}
-			return rate / size;
+			return rate;
 		}
-		return rate/size;
+		return rate;
 	}
 }
