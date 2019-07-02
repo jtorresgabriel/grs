@@ -58,6 +58,7 @@ import librec.ext.PD;
 import librec.ext.PRankD;
 import librec.ext.SlopeOne;
 import librec.groups.Average;
+import librec.groups.AverageMeasury;
 import librec.groups.LeastMeasury;
 import librec.groups.MostMeasury;
 import librec.groups.Mvoted;
@@ -783,6 +784,8 @@ public class LibRec {
 		/*********GRS******/
 		case "average":
 			return new Average(trainMatrix, testMatrix, fold);
+		case "avgmeasury":
+			return new AverageMeasury(trainMatrix, testMatrix, fold);
 		case "mvoted":
 			return new Mvoted(trainMatrix, testMatrix, fold);
 		case "leastmeasury":
