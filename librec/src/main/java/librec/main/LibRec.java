@@ -59,6 +59,7 @@ import librec.ext.PRankD;
 import librec.ext.SlopeOne;
 import librec.groups.Average;
 import librec.groups.AverageMeasury;
+import librec.groups.BordaCounts;
 import librec.groups.LeastMeasury;
 import librec.groups.MostMeasury;
 import librec.groups.Mvoted;
@@ -798,6 +799,8 @@ public class LibRec {
 			return new multiplicative(trainMatrix, testMatrix, fold);
 		case "add":
 			return new add(trainMatrix, testMatrix, fold);
+		case "bordacounts":
+			return new BordaCounts(trainMatrix, testMatrix, fold);
 		default:
 			throw new Exception("No recommender is specified!");
 		}

@@ -36,7 +36,7 @@ import librec.intf.Recommender;
  * @author Jorge
  *
  */
-public class Mvoted extends Recommender {
+public class BordaCounts extends Recommender {
 
 
 	protected float binThold;
@@ -54,7 +54,7 @@ public class Mvoted extends Recommender {
 	private ArrayList<Integer> missingGroup;
 	private ReadingGroups groupDataDao;
 
-	public Mvoted(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
+	public BordaCounts(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
 		groupDataDao = new ReadingGroups(cf.getPath("dataset.ratings.group"));
 		groupData = groupDataDao.ReadingGroups(cf.getPath("dataset.group"));
@@ -111,6 +111,7 @@ public class Mvoted extends Recommender {
 		String users[] = null;
 		int votes[] = null;
 		double rate = 0;
+		int borda = 0;
 
 		if (groupData.containsKey(group) == true) {
 			size = groupData.get(group).size();
@@ -122,37 +123,24 @@ public class Mvoted extends Recommender {
 				if (UserRatings.get(users[i]) == null) {
 					int y = ((int)Math.round(averageMissing(item))) -1;
 					votes[y] = votes[y] + 1;
+				}else if ((UserRatings.get(users[i]).get(item)) == null) {
+						int y = ((int)Math.round(averageMissing(item))) -1;
+						votes[y] = votes[y] + 1;
+				} else if  ((UserRatings.get(users[i]).get(item)).equals("0")) {
+					int y = ((int)Math.round(averageMissing(item))) -1;
+					votes[y] = votes[y] + 1;
 				} else {
 					String x = (UserRatings.get(users[i]).get(item));
 					int y = ((int)Math.round(Double.parseDouble(x))) - 1;
 					votes[y] = votes[y] + 1;
+					}
 				}
+			for (int i = 0; i < size; i++) {
+				borda = borda + (i+1) * votes[i];
 			}
-			
-				if ((size > 1) && (size % 2 != 0)) { //to check if the number is even or odd
-					int a = votes[0];
-					for (int z = 1; z < 5; z++) {
-						int b = votes[z];
-						if (b > a) {
-							a = b;
-							rate = z + 1;
-						}
-					}
-				} else if ((size > 1) && (size % 2 == 0)) {
-					int a = votes[0];
-					for (int z = 1; z < 5; z++) {
-						int b = votes[z];
-						if (b > a) {
-							a = b;
-							rate = z + 1;
-						} else if (b == a) {
-							rate = z+1; //given the max rate if the vote are equal
-						}
-					}
-				}
-				return rate;
+			return borda;
 			}
 
-		return rate;
+		return borda;
 	}
 }
