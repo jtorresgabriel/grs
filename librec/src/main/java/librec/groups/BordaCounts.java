@@ -36,7 +36,8 @@ import librec.intf.Recommender;
  * @author Jorge
  *
  */
-public class AverageMeasury extends Recommender {
+public class BordaCounts extends Recommender {
+
 
 	protected float binThold;
 	protected int[] columns;
@@ -52,11 +53,9 @@ public class AverageMeasury extends Recommender {
 	private HashMap<Integer, List<String>> ItemData;
 	private ArrayList<Integer> missingGroup;
 	private ReadingGroups groupDataDao;
-	private float threshold;
 
-	public AverageMeasury(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
+	public BordaCounts(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
-		
 		groupDataDao = new ReadingGroups(cf.getPath("dataset.ratings.group"));
 		groupData = groupDataDao.ReadingGroups(cf.getPath("dataset.group"));
 		UserRatings = groupDataDao.ReadUserRatings(cf.getPath("dataset.ratings"), cf.getPath("dataset.ratings.predict"));
@@ -66,13 +65,9 @@ public class AverageMeasury extends Recommender {
 
 	@Override
 	protected void initModel() throws Exception {
-		 threshold = algoOptions.getFloat("-threshold");
-
 
 	}
 
-	// This funtion should be in java class to avoid repeticion
-	
 	protected void missingUser() {
 		missingGroup = new ArrayList<Integer>();
 		for (Entry<Integer, List<String>> entry : groupData.entrySet()) {
@@ -106,40 +101,46 @@ public class AverageMeasury extends Recommender {
 		return average / ItemData.get(item).size();
 
 	}
-
 	protected double predict(int u, int j) {
 
 		int group = Integer.parseInt(rateDao.getUserId(u));
 		int item = Integer.parseInt(rateDao.getItemId(j));
-						
+
 		int size = 0;
 
 		String users[] = null;
-		double rates[] = null;
+		int votes[] = null;
 		double rate = 0;
-		int valores = 0;
+		int borda = 0;
 
 		if (groupData.containsKey(group) == true) {
 			size = groupData.get(group).size();
 			users = new String[size];
-			rates = new double[size];
-			
+			votes = new int[5];
+				
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
 				if (UserRatings.get(users[i]) == null) {
-					rates[i] = averageMissing(item);
-					
-				}else {
-				String x = (UserRatings.get(users[i]).get(item));							
-				rates[i] = Double.parseDouble(x);
+					int y = ((int)Math.round(averageMissing(item))) -1;
+					votes[y] = votes[y] + 1;
+				}else if ((UserRatings.get(users[i]).get(item)) == null) {
+						int y = ((int)Math.round(averageMissing(item))) -1;
+						votes[y] = votes[y] + 1;
+				} else if  ((UserRatings.get(users[i]).get(item)).equals("0")) {
+					int y = ((int)Math.round(averageMissing(item))) -1;
+					votes[y] = votes[y] + 1;
+				} else {
+					String x = (UserRatings.get(users[i]).get(item));
+					int y = ((int)Math.round(Double.parseDouble(x))) - 1;
+					votes[y] = votes[y] + 1;
+					}
 				}
-				if (rates[i] >= threshold) {
-					rate = rate + rates[i];
-					valores++;
-				}
+			for (int i = 0; i < size; i++) {
+				borda = borda + (i+1) * votes[i];
 			}
-			return (rate/valores);
-		}
-		return (rate/valores);
+			return borda;
+			}
+
+		return borda;
 	}
 }

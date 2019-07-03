@@ -57,11 +57,15 @@ import librec.ext.NMF;
 import librec.ext.PD;
 import librec.ext.PRankD;
 import librec.ext.SlopeOne;
+import librec.groups.ApprovalVoting;
 import librec.groups.Average;
 import librec.groups.AverageMeasury;
+import librec.groups.BordaCounts;
 import librec.groups.LeastMeasury;
 import librec.groups.MostMeasury;
 import librec.groups.Mvoted;
+import librec.groups.add;
+import librec.groups.multiplicative;
 import librec.intf.GraphicRecommender;
 import librec.intf.IterativeRecommender;
 import librec.intf.Recommender;
@@ -792,6 +796,14 @@ public class LibRec {
 			return new LeastMeasury(trainMatrix, testMatrix, fold);
 		case "mostmeasury":
 			return new MostMeasury(trainMatrix, testMatrix, fold);
+		case "multiplicative":
+			return new multiplicative(trainMatrix, testMatrix, fold);
+		case "add":
+			return new add(trainMatrix, testMatrix, fold);
+		case "bordacounts":
+			return new BordaCounts(trainMatrix, testMatrix, fold);
+		case "approvalvoting":
+			return new ApprovalVoting(trainMatrix, testMatrix, fold);
 		default:
 			throw new Exception("No recommender is specified!");
 		}

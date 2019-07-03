@@ -36,7 +36,7 @@ import librec.intf.Recommender;
  * @author Jorge
  *
  */
-public class AverageMeasury extends Recommender {
+public class multiplicative extends Recommender {
 
 	protected float binThold;
 	protected int[] columns;
@@ -52,9 +52,8 @@ public class AverageMeasury extends Recommender {
 	private HashMap<Integer, List<String>> ItemData;
 	private ArrayList<Integer> missingGroup;
 	private ReadingGroups groupDataDao;
-	private float threshold;
 
-	public AverageMeasury(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
+	public multiplicative(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
 		
 		groupDataDao = new ReadingGroups(cf.getPath("dataset.ratings.group"));
@@ -66,8 +65,6 @@ public class AverageMeasury extends Recommender {
 
 	@Override
 	protected void initModel() throws Exception {
-		 threshold = algoOptions.getFloat("-threshold");
-
 
 	}
 
@@ -111,35 +108,33 @@ public class AverageMeasury extends Recommender {
 
 		int group = Integer.parseInt(rateDao.getUserId(u));
 		int item = Integer.parseInt(rateDao.getItemId(j));
-						
+		
 		int size = 0;
 
 		String users[] = null;
 		double rates[] = null;
-		double rate = 0;
-		int valores = 0;
+		double rate = 1;
 
 		if (groupData.containsKey(group) == true) {
 			size = groupData.get(group).size();
 			users = new String[size];
 			rates = new double[size];
-			
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
 				if (UserRatings.get(users[i]) == null) {
 					rates[i] = averageMissing(item);
-					
+				}else if ((UserRatings.get(users[i]).get(item)) == null) {
+					String x = (UserRatings.get(users[i]).get(item));	
+					System.out.print(users[i]+ " "+ item +" "+ x+"\n");
+					rates[i] = averageMissing(item);
 				}else {
-				String x = (UserRatings.get(users[i]).get(item));							
+				String x = (UserRatings.get(users[i]).get(item));	
 				rates[i] = Double.parseDouble(x);
 				}
-				if (rates[i] >= threshold) {
-					rate = rate + rates[i];
-					valores++;
-				}
+				rate = rate * rates[i];
 			}
-			return (rate/valores);
+			return rate;
 		}
-		return (rate/valores);
+		return rate;
 	}
 }

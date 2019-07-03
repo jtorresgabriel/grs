@@ -150,6 +150,7 @@ public class Mvoted extends Recommender {
 						}
 					}
 				}
+				return rate;
 			}
 
 		return rate;
