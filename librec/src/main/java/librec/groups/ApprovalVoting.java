@@ -36,7 +36,7 @@ import librec.intf.Recommender;
  * @author Jorge
  *
  */
-public class AverageMeasury extends Recommender {
+public class ApprovalVoting extends Recommender {
 
 	protected float binThold;
 	protected int[] columns;
@@ -54,7 +54,7 @@ public class AverageMeasury extends Recommender {
 	private ReadingGroups groupDataDao;
 	private float threshold;
 
-	public AverageMeasury(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
+	public ApprovalVoting(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
 		
 		groupDataDao = new ReadingGroups(cf.getPath("dataset.ratings.group"));
@@ -116,7 +116,6 @@ public class AverageMeasury extends Recommender {
 
 		String users[] = null;
 		double rates[] = null;
-		double rate = 0;
 		int valores = 0;
 
 		if (groupData.containsKey(group) == true) {
@@ -128,18 +127,18 @@ public class AverageMeasury extends Recommender {
 				users[i] = groupData.get(group).get(i);
 				if (UserRatings.get(users[i]) == null) {
 					rates[i] = averageMissing(item);
-					
+				}else if ((UserRatings.get(users[i]).get(item)) == null) {
+					rates[i] = averageMissing(item);	
 				}else {
 				String x = (UserRatings.get(users[i]).get(item));							
 				rates[i] = Double.parseDouble(x);
 				}
 				if (rates[i] >= threshold) {
-					rate = rate + rates[i];
 					valores++;
 				}
 			}
-			return (rate/valores);
+			return valores;
 		}
-		return (rate/valores);
+		return valores;
 	}
 }

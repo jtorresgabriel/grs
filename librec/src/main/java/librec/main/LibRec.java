@@ -57,6 +57,7 @@ import librec.ext.NMF;
 import librec.ext.PD;
 import librec.ext.PRankD;
 import librec.ext.SlopeOne;
+import librec.groups.ApprovalVoting;
 import librec.groups.Average;
 import librec.groups.AverageMeasury;
 import librec.groups.BordaCounts;
@@ -801,6 +802,8 @@ public class LibRec {
 			return new add(trainMatrix, testMatrix, fold);
 		case "bordacounts":
 			return new BordaCounts(trainMatrix, testMatrix, fold);
+		case "approvalvoting":
+			return new ApprovalVoting(trainMatrix, testMatrix, fold);
 		default:
 			throw new Exception("No recommender is specified!");
 		}
