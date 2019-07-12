@@ -61,7 +61,7 @@ public class LeastMeasury extends Recommender {
 		groupData = groupDataDao.ReadingGroups(cf.getPath("dataset.group"));
 		UserRatings = groupDataDao.ReadUserRatings(cf.getPath("dataset.ratings"), cf.getPath("dataset.ratings.predict"));
 		ItemData = groupDataDao.ReadItems(cf.getPath("dataset.ratings"));
-		missingUser();
+		missingUser(); 
 	}
 
 	@Override

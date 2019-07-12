@@ -130,8 +130,9 @@ public class GUI {
 		frame.getContentPane().add(GroupIdField);
 		
 		JComboBox Methods = new JComboBox();
-		Methods.setModel(new DefaultComboBoxModel(new String[] {"Average", "Average Measury", "Least Measury", "Most Measury", "Most Popular", "Add", "Multiplicative", "Border Copeland"}));
-		Methods.setBounds(1, 186, 146, 25);
+		Methods.setModel(new DefaultComboBoxModel(new String[] {"Average", "Average Measury", "Least Measury", 
+				"Most Measury", "Most Popular", "Add", "Multiplicative", "Border Copeland"}));
+		Methods.setBounds(1, 208, 146, 25);
 		frame.getContentPane().add(Methods);
 		
 		UserInfoField = new JTextField();
@@ -148,7 +149,7 @@ public class GUI {
 		frame.getContentPane().add(BtnUserInfo);
 		
 		JLabel lblNewLabel = new JLabel("Thresshold:");
-		lblNewLabel.setBounds(3, 220, 90, 25);
+		lblNewLabel.setBounds(1, 240, 90, 25);
 		frame.getContentPane().add(lblNewLabel);
 		
 		JLabel lblWelcomeToGroup = new JLabel("Welcome To Group Recommeder System");
@@ -157,13 +158,26 @@ public class GUI {
 		frame.getContentPane().add(lblWelcomeToGroup);
 		
 		textField = new JTextField();
-		textField.setBounds(82, 220, 62, 25);
+		textField.setBounds(85, 240, 62, 25);
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
 		JButton SetRun = new JButton("Set Run");
 		SetRun.setBounds(245, 278, 251, 25);
 		frame.getContentPane().add(SetRun);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Add", "Multiplicative", "Border Copeland"}));
+		comboBox.setBounds(180, 208, 146, 25);
+		frame.getContentPane().add(comboBox);
+		
+		JLabel lblNewLabel_1 = new JLabel("Rating");
+		lblNewLabel_1.setBounds(1, 180, 56, 25);
+		frame.getContentPane().add(lblNewLabel_1);
+		
+		JLabel lblRanking = new JLabel("Ranking");
+		lblRanking.setBounds(180, 184, 56, 25);
+		frame.getContentPane().add(lblRanking);
 		
 		
 	}

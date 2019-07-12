@@ -128,7 +128,6 @@ public class AverageMeasury extends Recommender {
 				users[i] = groupData.get(group).get(i);
 				if (UserRatings.get(users[i]) == null) {
 					rates[i] = averageMissing(item);
-					
 				}else {
 				String x = (UserRatings.get(users[i]).get(item));							
 				rates[i] = Double.parseDouble(x);
@@ -138,8 +137,8 @@ public class AverageMeasury extends Recommender {
 					valores++;
 				}
 			}
-			return (rate/valores);
+			return Math.round(rate/valores);
 		}
-		return (rate/valores);
+		return Math.round(rate/valores);
 	}
 }

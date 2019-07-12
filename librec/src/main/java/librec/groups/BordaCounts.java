@@ -60,7 +60,7 @@ public class BordaCounts extends Recommender {
 		groupData = groupDataDao.ReadingGroups(cf.getPath("dataset.group"));
 		UserRatings = groupDataDao.ReadUserRatings(cf.getPath("dataset.ratings"), cf.getPath("dataset.ratings.predict"));
 		ItemData = groupDataDao.ReadItems(cf.getPath("dataset.ratings"));
-		missingUser();
+		missingUser(); 
 	}
 
 	@Override
@@ -109,30 +109,29 @@ public class BordaCounts extends Recommender {
 		int size = 0;
 
 		String users[] = null;
-		int votes[] = null;
+		int votes[] = new int[6]; 
 		double rate = 0;
 		int borda = 0;
 
 		if (groupData.containsKey(group) == true) {
 			size = groupData.get(group).size();
 			users = new String[size];
-			votes = new int[5];
-				
+							
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
 				if (UserRatings.get(users[i]) == null) {
-					int y = ((int)Math.round(averageMissing(item))) -1;
-					votes[y] = votes[y] + 1;
+					int y = ((int)Math.round(averageMissing(item)));
+					votes[y] = votes[y];
 				}else if ((UserRatings.get(users[i]).get(item)) == null) {
-						int y = ((int)Math.round(averageMissing(item))) -1;
-						votes[y] = votes[y] + 1;
+						int y = ((int)Math.round(averageMissing(item)));
+						votes[y] = votes[y];
 				} else if  ((UserRatings.get(users[i]).get(item)).equals("0")) {
-					int y = ((int)Math.round(averageMissing(item))) -1;
-					votes[y] = votes[y] + 1;
+					int y = ((int)Math.round(averageMissing(item)));
+					votes[y] = votes[y];
 				} else {
 					String x = (UserRatings.get(users[i]).get(item));
-					int y = ((int)Math.round(Double.parseDouble(x))) - 1;
-					votes[y] = votes[y] + 1;
+					int y = ((int)Math.round(Double.parseDouble(x)));
+					votes[y] = votes[y];
 					}
 				}
 			for (int i = 0; i < size; i++) {

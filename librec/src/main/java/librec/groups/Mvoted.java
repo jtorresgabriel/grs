@@ -62,7 +62,7 @@ public class Mvoted extends Recommender {
 		ItemData = groupDataDao.ReadItems(cf.getPath("dataset.ratings"));
 		missingUser();
 	}
-
+	
 	@Override
 	protected void initModel() throws Exception {
 

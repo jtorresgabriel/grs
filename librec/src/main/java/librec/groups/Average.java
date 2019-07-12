@@ -56,7 +56,7 @@ public class Average extends Recommender {
 	public Average(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
 		
-		groupDataDao = new ReadingGroups(cf.getPath("dataset.ratings.group"));
+		groupDataDao = new ReadingGroups(cf.getPath("dataset.ratings.group")); 
 		groupData = groupDataDao.ReadingGroups(cf.getPath("dataset.group"));
 		UserRatings = groupDataDao.ReadUserRatings(cf.getPath("dataset.ratings"), cf.getPath("dataset.ratings.predict"));
 		ItemData = groupDataDao.ReadItems(cf.getPath("dataset.ratings"));
@@ -134,8 +134,8 @@ public class Average extends Recommender {
 				rate = rate + rates[i];
 				
 			}
-			return rate / size;
+			return Math.round(rate / size);
 		}
-		return rate/size;
+		return Math.round(rate/size);
 	}
 }

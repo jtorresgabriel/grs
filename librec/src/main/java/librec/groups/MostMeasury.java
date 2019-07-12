@@ -61,7 +61,7 @@ public class MostMeasury extends Recommender {
 		groupData = groupDataDao.ReadingGroups(cf.getPath("dataset.group"));
 		UserRatings = groupDataDao.ReadUserRatings(cf.getPath("dataset.ratings"), cf.getPath("dataset.ratings.predict"));
 		ItemData = groupDataDao.ReadItems(cf.getPath("dataset.ratings"));
-		missingUser();
+		missingUser(); 
 	}
 
 	@Override
@@ -126,13 +126,13 @@ public class MostMeasury extends Recommender {
 				rates[i] = Double.parseDouble(x);
 				}
 			}
-		index = indexOfSmallest(rates);
+		index = indexOfBigest(rates);
 		}
 		return (rates[index]);
 	}
 	
 	
-	public static int indexOfSmallest(double[] array){
+	public static int indexOfBigest(double[] array){
 		
 		 if ( array == null || array.length == 0 ) {
 			 return -1; // null or empty
