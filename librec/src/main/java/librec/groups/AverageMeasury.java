@@ -128,11 +128,12 @@ public class AverageMeasury extends Recommender {
 				users[i] = groupData.get(group).get(i);
 				if (UserRatings.get(users[i]) == null) {
 					rates[i] = averageMissing(item);
-					
+				}else if ((UserRatings.get(users[i]).get(item)) == null) {
+					rates[i] = averageMissing(item);
 				}else {
-				String x = (UserRatings.get(users[i]).get(item));							
+				String x = (UserRatings.get(users[i]).get(item));	
 				rates[i] = Double.parseDouble(x);
-				}
+				} 
 				if (rates[i] >= threshold) {
 					rate = rate + rates[i];
 					valores++;

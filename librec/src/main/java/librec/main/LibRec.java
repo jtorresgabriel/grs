@@ -63,6 +63,7 @@ import librec.groups.AverageMeasury;
 import librec.groups.BordaCounts;
 import librec.groups.LeastMeasury;
 import librec.groups.MostMeasury;
+import librec.groups.MostRespectPerson;
 import librec.groups.Mvoted;
 import librec.groups.add;
 import librec.groups.multiplicative;
@@ -116,7 +117,7 @@ public class LibRec {
 	// is only to print measurements
 	public static boolean isMeasuresOnly = false;
 	// output directory path
-	protected static String tempDirPath = "./Results/";
+	protected static String tempDirPath = "./Results/"; 
 
 	// configuration
 	protected FileConfiger cf;
@@ -804,6 +805,8 @@ public class LibRec {
 			return new BordaCounts(trainMatrix, testMatrix, fold);
 		case "approvalvoting":
 			return new ApprovalVoting(trainMatrix, testMatrix, fold);
+		case "mostrespectperson":
+			return new MostRespectPerson(trainMatrix, testMatrix, fold);
 		default:
 			throw new Exception("No recommender is specified!");
 		}

@@ -36,8 +36,7 @@ import librec.intf.Recommender;
  * @author Jorge
  *
  */
-public class Mvoted extends Recommender {
-
+public class MostRespectPerson extends Recommender {
 
 	protected float binThold;
 	protected int[] columns;
@@ -51,12 +50,13 @@ public class Mvoted extends Recommender {
 
 	private HashMap<String, HashMap<Integer, String>> UserRatings;
 	private HashMap<Integer, List<String>> ItemData;
+	private HashMap<String, Integer> PersonalInfo;
 	private ArrayList<Integer> missingGroup;
 	private ReadingGroups groupDataDao;
-	private String type;
 
-	public Mvoted(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
+	public MostRespectPerson(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
 		super(trainMatrix, testMatrix, fold);
+		
 		groupDataDao = new ReadingGroups(cf.getPath("dataset.ratings.group"));
 		groupData = groupDataDao.ReadingGroups(cf.getPath("dataset.group"));
 		UserRatings = groupDataDao.ReadUserRatings(cf.getPath("dataset.ratings"), cf.getPath("dataset.ratings.predict"));
@@ -66,9 +66,12 @@ public class Mvoted extends Recommender {
 
 	@Override
 	protected void initModel() throws Exception {
-		type = algoOptions.getString("-type");
+		
+
 	}
 
+	// This funtion should be in java class to avoid repeticion
+	
 	protected void missingUser() {
 		missingGroup = new ArrayList<Integer>();
 		for (Entry<Integer, List<String>> entry : groupData.entrySet()) {
@@ -102,68 +105,76 @@ public class Mvoted extends Recommender {
 		return average / ItemData.get(item).size();
 
 	}
+
 	protected double predict(int u, int j) {
+		PersonalInfo = Agreeableness(cf.getPath("dataset.invidual.info")); 
 
 		int group = Integer.parseInt(rateDao.getUserId(u));
 		int item = Integer.parseInt(rateDao.getItemId(j));
-
-		int size = 0;
-
+		
+		int size = 0; 
+ 
 		String users[] = null;
-		int votes[] = null;
+		double rates[] = null;
+		int agreeableness[] = null;
 		double rate = 0;
 
 		if (groupData.containsKey(group) == true) {
 			size = groupData.get(group).size();
 			users = new String[size];
-			votes = new int[5];
-				
+			agreeableness = new int[size];
+			rates = new double[size];
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
 				if (UserRatings.get(users[i]) == null) {
-					int y = ((int)Math.round(averageMissing(item))) -1;
-					votes[y] = votes[y] + 1;
+					rates[i] = averageMissing(item);
 				}else if ((UserRatings.get(users[i]).get(item)) == null) {
-					int y = ((int)Math.round(averageMissing(item))) -1;
-					votes[y] = votes[y] + 1;
-				} else {
-					String x = (UserRatings.get(users[i]).get(item));
-					int y = ((int)Math.round(Double.parseDouble(x))) - 1;
-					votes[y] = votes[y] + 1;
-				}
+					rates[i] = averageMissing(item);
+				}else {
+				String x = (UserRatings.get(users[i]).get(item));	
+				rates[i] = Double.parseDouble(x);
+				agreeableness[i] = PersonalInfo.get(users[i]); 
+				}			
 			}
-			
-				if (size % 2 != 0) { //to check if the number is even or odd
-					int a = votes[0];
-					for (int z = 1; z < 5; z++) {
-						int b = votes[z];
-						if (b > a) {
-							a = b;
-							rate = z + 1;
-						}
-					}
-				} else if (size % 2 == 0) {
-					int a = votes[0];
-					for (int z = 1; z < 5; z++) {
-						int b = votes[z];
-						if (b > a) {
-							a = b;
-							rate = z + 1;
-						} else if (b == a) {
-							switch (type) {
-							case "max":
-								rate = z+1; //given the max rate if the vote are equal
-								break;
-							case "min":
-								rate = rate;
-								break;
-							}
-						}
-					}
-				}
-				return rate;
-			}
-
-		return rate;
+		}
+		int index = indexOfSmallest(agreeableness);
+		return Math.round(rates[index]);
 	}
-}
+	
+	public HashMap<String, Integer>Agreeableness(String pathInfo){
+
+		try {
+			PersonalInfo= new HashMap<String, Integer>();
+			BufferedReader br = FileIO.getReader(pathInfo);
+			
+			String line = null;
+
+			while ((line = br.readLine()) != null) {
+				String[] data = line.split("[ \t,]");
+				String mailId = data[0];
+				int agreeableness = Integer.parseInt(data[4]); //Agreeableness
+				PersonalInfo.put(mailId, agreeableness);		
+			}
+			br.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException iex) {
+			iex.printStackTrace();
+		}
+		return PersonalInfo;
+	}
+	public static int indexOfSmallest(int[] array){
+		
+		 if ( array == null || array.length == 0 ) {
+			 return -1; // null or empty
+		 }
+
+		  int smallest = 0;
+		  for ( int i = 1; i < array.length; i++ )
+		  {
+		      if ( array[i] < array[smallest] ) smallest = i;
+		  }
+		  return smallest; // position of the first smallest found
+		}
+	}

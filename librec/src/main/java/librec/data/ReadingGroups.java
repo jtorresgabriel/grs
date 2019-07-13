@@ -107,7 +107,6 @@ public HashMap<String, HashMap<Integer, String>>ReadUserRatings(String pathRatin
 		try {
 			br = FileIO.getReader(pathPredictions);
 		
-
 		String line = null;
 
 		while ((line = br.readLine()) != null) {

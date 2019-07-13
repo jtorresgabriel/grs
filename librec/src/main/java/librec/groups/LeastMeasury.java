@@ -131,14 +131,19 @@ public class LeastMeasury extends Recommender {
 				users[i] = groupData.get(group).get(i);
 				if (UserRatings.get(users[i]) == null) {
 					rates[i] = averageMissing(item);
+				}else if ((UserRatings.get(users[i]).get(item)) == null) {
+					rates[i] = averageMissing(item);
 				}else {
 				String x = (UserRatings.get(users[i]).get(item));
 				rates[i] = Double.parseDouble(x);
 				}
 			}
 		}
-		
-		return (rates[indexOfSmallest(rates)]);
+		int x =  (int) (rates[indexOfSmallest(rates)]);
+		if (x == -1) {
+			System.out.print(group);
+		}
+		return (x);
 	}
 	
 	

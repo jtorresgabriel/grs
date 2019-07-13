@@ -109,7 +109,7 @@ public class DataDAO {
 		if (itemIds == null)
 			this.itemIds = HashBiMap.create();
 		else
-			this.itemIds = itemIds;
+			this.itemIds = itemIds; 
 
 		scaleDist = HashMultiset.create();
 
@@ -265,7 +265,6 @@ public class DataDAO {
 		// release memory of data table
 		dataTable = null;
 
-		System.out.print(rateMatrix);
 		return rateMatrix;
 	}
 

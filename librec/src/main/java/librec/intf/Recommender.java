@@ -72,7 +72,7 @@ public abstract class Recommender implements Runnable {
 	public static String tempDirPath;
 
 	// params used for multiple runs
-	public static Map<String, List<Float>> params = new HashMap<>();
+	public static Map<String, List<Float>> params = new HashMap<>(); 
 
 	// Guava cache configuration
 	protected static String cacheSpec;
