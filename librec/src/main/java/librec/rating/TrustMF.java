@@ -49,7 +49,7 @@ public class TrustMF extends SocialRecommender {
 		Br = new DenseMatrix(numUsers, numFactors);
 		Wr = new DenseMatrix(numUsers, numFactors);
 
-		Vr.init();
+		Vr.init(); 
 		Br.init();
 		Wr.init();
 	}

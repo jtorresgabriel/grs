@@ -48,7 +48,7 @@ public class ItemCluster extends GraphicRecommender {
 	private DenseVector Ni;
 
 	public ItemCluster(SparseMatrix trainMatrix, SparseMatrix testMatrix, int fold) {
-		super(trainMatrix, testMatrix, fold);
+		super(trainMatrix, testMatrix, fold); 
 	}
 
 	@Override

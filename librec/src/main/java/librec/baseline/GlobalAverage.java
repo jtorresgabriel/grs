@@ -30,7 +30,7 @@ import librec.intf.Recommender;
 public class GlobalAverage extends Recommender {
 
 	public GlobalAverage(SparseMatrix rm, SparseMatrix tm, int fold) {
-		super(rm, tm, fold);
+		super(rm, tm, fold); 
 
 		this.algoName = "GlobalAvg";
 	}

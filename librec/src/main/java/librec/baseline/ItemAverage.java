@@ -40,7 +40,7 @@ public class ItemAverage extends Recommender {
 
 		itemMeans = new HashMap<>();
 		algoName = "ItemAvg";
-	}
+	} 
 
 	@Override
 	protected double predict(int u, int j) {
