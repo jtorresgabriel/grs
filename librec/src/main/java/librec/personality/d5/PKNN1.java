@@ -158,18 +158,18 @@ public class PKNN1 extends Recommender {
 	private void readData() {
 		try {
 
-			BufferedReader br = FileIO.getReader(cf.getPath("dataset.personality"));
+			BufferedReader br = FileIO.getReader(cf.getPath("dataset.invidual.info"));
 			persMap = new HashMap<Integer, double[]>();
 
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				String[] data = line.split("[ ,]");
 
-				Integer userId = Integer.parseInt(data[0]);
+				String userId = (data[0]);
 
 				double[] persDim = { Double.parseDouble(data[5]), Double.parseDouble(data[6]),
 						Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]) };
-					int userInnerId = rateDao.getUserId(userId.toString());
+					int userInnerId = rateDao.getUserId(userId);
 					persMap.put(userInnerId, persDim);
 
 
@@ -194,8 +194,10 @@ public class PKNN1 extends Recommender {
 		for (int row = 0; row < persMap.size(); row++) {
 			SparseVector iv = new SparseVector(persMap.get(row).length, persMap.get(row));
 
+			
 			for (int col = row + 1; col < persMap.size(); col++) {
 				SparseVector jv = new SparseVector(persMap.get(col).length, persMap.get(col));
+				
 
 				double sim = correlation(iv, jv);
 

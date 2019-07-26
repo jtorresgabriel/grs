@@ -175,19 +175,19 @@ public class PKNN2 extends Recommender {
 	private void readData() {
 		try {
 
-			BufferedReader br = FileIO.getReader(cf.getPath("dataset.personality"));
+			BufferedReader br = FileIO.getReader(cf.getPath("dataset.invidual.info"));
 			persMap = new HashMap<Integer, double[]>();
 
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				String[] data = line.split("[ ,]");
 
-				Integer userInnerId = Integer.parseInt(data[0]);
+				String mailId = (data[0]);
 
 				double[] persDim = { Double.parseDouble(data[5]), Double.parseDouble(data[6]),
 						Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]) };
 				
-					userInnerId = rateDao.getUserId(userInnerId.toString());
+					int userInnerId = rateDao.getUserId(mailId);
 					persMap.put(userInnerId, persDim);
 
 

@@ -125,7 +125,6 @@ public class add extends Recommender {
 					rates[i] = averageMissing(item);
 				}else if ((UserRatings.get(users[i]).get(item)) == null) {
 					String x = (UserRatings.get(users[i]).get(item));	
-					System.out.print(users[i]+ " "+ item +" "+ x+"\n");
 					rates[i] = averageMissing(item);
 				}else {
 				String x = (UserRatings.get(users[i]).get(item));	

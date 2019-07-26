@@ -646,9 +646,7 @@ public abstract class Recommender implements Runnable {
 			sum_r_rmses += r_err * r_err;
 
 			numCount++;
-			if (numCount ==234){
-				System.out.print("hola");
-			}
+			
 			
 
 			if (r_err > 1e-5)

@@ -50,7 +50,7 @@ public class MostRespectPerson extends Recommender {
 
 	private HashMap<String, HashMap<Integer, String>> UserRatings;
 	private HashMap<Integer, List<String>> ItemData;
-	private HashMap<String, Integer> PersonalInfo;
+	private HashMap<String, double[]> PersonalInfo;
 	private ArrayList<Integer> missingGroup;
 	private ReadingGroups groupDataDao;
 
@@ -107,7 +107,7 @@ public class MostRespectPerson extends Recommender {
 	}
 
 	protected double predict(int u, int j) {
-		PersonalInfo = Agreeableness(cf.getPath("dataset.invidual.info")); 
+		PersonalInfo = PersonalInfo(cf.getPath("dataset.invidual.info")); 
 
 		int group = Integer.parseInt(rateDao.getUserId(u));
 		int item = Integer.parseInt(rateDao.getItemId(j));
@@ -116,14 +116,15 @@ public class MostRespectPerson extends Recommender {
  
 		String users[] = null;
 		double rates[] = null;
-		int agreeableness[] = null;
+		double[] agreeablenes =null;
+		
 		double rate = 0;
 
 		if (groupData.containsKey(group) == true) {
 			size = groupData.get(group).size();
 			users = new String[size];
-			agreeableness = new int[size];
 			rates = new double[size];
+			agreeablenes = new double[size];
 			for (int i = 0; i < size; i++) {
 				users[i] = groupData.get(group).get(i);
 				if (UserRatings.get(users[i]) == null) {
@@ -133,30 +134,30 @@ public class MostRespectPerson extends Recommender {
 				}else {
 				String x = (UserRatings.get(users[i]).get(item));	
 				rates[i] = Double.parseDouble(x);
-				agreeableness[i] = PersonalInfo.get(users[i]); 
+				agreeablenes[i]=(PersonalInfo.get(users[i])[3]); 
 				}			
 			}
 		}
-		int index = indexOfSmallest(agreeableness);
-		return Math.round(rates[index]);
+		double index = indexOfSmallest(agreeablenes);
+		return Math.round(rates[(int) index]);
 	}
 	
-	public HashMap<String, Integer>Agreeableness(String pathInfo){
-
+	public HashMap<String, double[]>PersonalInfo(String pathInfo){
 		try {
-			PersonalInfo= new HashMap<String, Integer>();
 			BufferedReader br = FileIO.getReader(pathInfo);
+			PersonalInfo= new HashMap<String, double[]>();
 			
 			String line = null;
-
 			while ((line = br.readLine()) != null) {
-				String[] data = line.split("[ \t,]");
-				String mailId = data[0];
-				int agreeableness = Integer.parseInt(data[4]); //Agreeableness
-				PersonalInfo.put(mailId, agreeableness);		
+				String[] data = line.split("[ ,]");
+				String mailId = (data[0]);
+				//Email,Gender,Age,Marriage,Country,
+				//Openness,Conscientiousness,Extraversion,Agreeableness,Neuroticism
+				double[] persDim = { Double.parseDouble(data[5]), Double.parseDouble(data[6]),
+						Double.parseDouble(data[7]), Double.parseDouble(data[8]), 
+						Double.parseDouble(data[9]) };
+				PersonalInfo.put(mailId, persDim);
 			}
-			br.close();
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException iex) {
@@ -164,7 +165,7 @@ public class MostRespectPerson extends Recommender {
 		}
 		return PersonalInfo;
 	}
-	public static int indexOfSmallest(int[] array){
+	public static int indexOfSmallest(double[] array){
 		
 		 if ( array == null || array.length == 0 ) {
 			 return -1; // null or empty

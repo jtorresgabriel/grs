@@ -189,7 +189,6 @@ public class PersMF extends IterativeRecommender {
 	 * predict the rating of item j by user u 
 	 */
 	protected double predict(int u, int j) throws Exception {
-		
 		return itemMeans.get(j) + itemBias.get(j)+userBias.get(u)+dotProd(P, u, Q, j);
 	}
 	
@@ -215,19 +214,19 @@ public class PersMF extends IterativeRecommender {
 	private void readData() {
 		try {
 
-			BufferedReader br = FileIO.getReader(cf.getPath("dataset.personality"));
+			BufferedReader br = FileIO.getReader(cf.getPath("dataset.invidual.info"));
 			persMap = new HashMap<Integer, double[]>();
 
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				String[] data = line.split("[ ,]");
 
-				Integer userId = Integer.parseInt(data[0]);
+				String userId = (data[0]);
 
 				double[] persDim = { Double.parseDouble(data[5]), Double.parseDouble(data[6]),
 						Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]) };
 				
-					int userInnerId = rateDao.getUserId(userId.toString());
+					int userInnerId = rateDao.getUserId(userId);
 					persMap.put(userInnerId, persDim);
 
 

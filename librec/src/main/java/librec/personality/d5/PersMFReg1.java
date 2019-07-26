@@ -260,14 +260,14 @@ public class PersMFReg1 extends IterativeRecommender {
 	private void readData() {
 		try {
 
-			BufferedReader br = FileIO.getReader(cf.getPath("dataset.personality"));
+			BufferedReader br = FileIO.getReader(cf.getPath("dataset.invidual.info"));
 			persMap = new HashMap<Integer, double[]>();
 
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				String[] data = line.split("[ ,]");
 
-				Integer userId = Integer.parseInt(data[0]);
+				String userId = (data[0]);
 
 				double[] persDim = { Double.parseDouble(data[5]), Double.parseDouble(data[6]),
 						Double.parseDouble(data[7]), Double.parseDouble(data[8]), Double.parseDouble(data[9]) };
